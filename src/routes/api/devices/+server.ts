@@ -4,19 +4,11 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// GET /api/devices - List all devices for the user
-export const GET: RequestHandler = async ({ cookies }) => {
-  const sessionId = cookies.get('session');
-  
-  if (!sessionId) {
-    return json({ error: 'Authentication required' }, { status: 401 });
-  }
-  
+// GET /api/devices - List all devices 
+export const GET: RequestHandler = async () => {
   try {
+    // Fetch all devices regardless of user
     const devices = await prisma.device.findMany({
-      where: {
-        userId: sessionId
-      },
       select: {
         id: true,
         name: true,
@@ -34,13 +26,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
 };
 
 // POST /api/devices - Register a new device
-export const POST: RequestHandler = async ({ request, cookies }) => {
-  const sessionId = cookies.get('session');
-  
-  if (!sessionId) {
-    return json({ error: 'Authentication required' }, { status: 401 });
-  }
-  
+export const POST: RequestHandler = async ({ request }) => {
   const { name, location } = await request.json();
   
   // Basic validation
@@ -49,11 +35,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   }
   
   try {
+    // Create the device without specifying a userId
     const device = await prisma.device.create({
       data: {
         name,
-        location,
-        userId: sessionId
+        location: location || ""
+        // No userId needed anymore since it's optional
       },
       select: {
         id: true,

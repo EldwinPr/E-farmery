@@ -13,8 +13,8 @@ model User {
   name         String
   passwordHash String
   devices      Device[]
-  schedules    Schedule[]
 }
+
 
 model Device {
   id               String             @id @default(uuid())
@@ -22,8 +22,8 @@ model Device {
   location         String?
   isOnline         Boolean            @default(false)
   lastSeen         DateTime?
-  userId           String
-  user             User               @relation(fields: [userId], references: [id])
+  userId           String?            // Make this field optional by adding ?
+  user             User?              @relation(fields: [userId], references: [id])
   moistureReadings MoistureReading[]
   irrigationEvents IrrigationEvent[]
   schedules        Schedule[]
@@ -55,7 +55,7 @@ model Schedule {
   deviceId        String
   device          Device            @relation(fields: [deviceId], references: [id])
   userId          String
-  user            User              @relation(fields: [userId], references: [id])
+  user            String
   targetMoisture  Float             // target moisture percentage
   duration        Int               // irrigation duration in seconds
   isActive        Boolean           @default(true)

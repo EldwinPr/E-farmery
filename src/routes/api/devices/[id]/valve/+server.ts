@@ -1,32 +1,18 @@
+// src/routes/api/devices/[id]/valve/+server.ts
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import { PrismaClient } from '@prisma/client';
-import { verifyDeviceOwnership } from '$lib/server/deviceAuth';
-import { getMqttClient, controlValve } from '$lib/server/mqtt-client';
-import { get } from 'svelte/store';
+import { controlValve } from '$lib/server/mqtt-client';
 
 const prisma = new PrismaClient();
 
 // POST /api/devices/:id/valve - Control the valve (on/off)
-export const POST: RequestHandler = async ({ params, request, cookies }) => {
-  const sessionId = cookies.get('session');
-  
-  if (!sessionId) {
-    return json({ error: 'Authentication required' }, { status: 401 });
-  }
-  
+export const POST: RequestHandler = async ({ params, request }) => {
   const deviceId = params.id;
   if (!deviceId) {
     return json({ error: 'Device ID is required' }, { status: 400 });
   }
-  
   const { state, duration } = await request.json();
-  
-  // Verify ownership
-  const isOwner = await verifyDeviceOwnership(deviceId, sessionId);
-  if (!isOwner) {
-    return json({ error: 'Device not found' }, { status: 404 });
-  }
   
   // Basic validation
   if (typeof state !== 'boolean') {
@@ -42,7 +28,7 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
   try {
     // Create irrigation event if turning on
     let irrigationEvent = null;
-    if (state === true && deviceId) {
+    if (state === true) {
       irrigationEvent = await prisma.irrigationEvent.create({
         data: {
           deviceId,
@@ -51,13 +37,6 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
           automated: false // Manual control
         }
       });
-    }
-    
-    // Check if MQTT client is connected
-    if (!getMqttClient) {
-      return json({ 
-        error: 'MQTT service is not available. Please try again later.' 
-      }, { status: 503 });
     }
     
     // Send the valve control command via MQTT
