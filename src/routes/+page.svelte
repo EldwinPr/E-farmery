@@ -1,2 +1,11 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script>
+	import { goto } from "$app/navigation";
+
+    async function gotoAuth() {
+        goto('/auth');
+    }
+</script>
+
+<button on:click={gotoAuth}>
+    Go to Auth
+</button>

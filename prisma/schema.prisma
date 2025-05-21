@@ -1,15 +1,64 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  name         String
+  passwordHash String
+  devices      Device[]
+  schedules    Schedule[]
+}
+
+model Device {
+  id               String             @id @default(uuid())
+  name             String
+  location         String?
+  isOnline         Boolean            @default(false)
+  lastSeen         DateTime?
+  userId           String
+  user             User               @relation(fields: [userId], references: [id])
+  moistureReadings MoistureReading[]
+  irrigationEvents IrrigationEvent[]
+  schedules        Schedule[]
+}
+
+model MoistureReading {
+  id        String   @id @default(uuid())
+  deviceId  String
+  device    Device   @relation(fields: [deviceId], references: [id])
+  value     Float    // moisture percentage
+  timestamp DateTime @default(now())
+}
+
+model IrrigationEvent {
+  id         String    @id @default(uuid())
+  deviceId   String
+  device     Device    @relation(fields: [deviceId], references: [id])
+  scheduleId String?
+  schedule   Schedule? @relation(fields: [scheduleId], references: [id])
+  duration   Int       // in seconds
+  waterUsage Float     // calculated liters
+  automated  Boolean   @default(true)
+  timestamp  DateTime  @default(now())
+}
+
+model Schedule {
+  id              String            @id @default(uuid())
+  name            String
+  deviceId        String
+  device          Device            @relation(fields: [deviceId], references: [id])
+  userId          String
+  user            User              @relation(fields: [userId], references: [id])
+  targetMoisture  Float             // target moisture percentage
+  duration        Int               // irrigation duration in seconds
+  isActive        Boolean           @default(true)
+  cronExpression  String?           // for time-based schedules
+  irrigationEvents IrrigationEvent[]
 }
