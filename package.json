@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"mqtt": "node broker.cjs",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -50,6 +51,7 @@
 		"@capacitor/android": "^7.2.0",
 		"@capacitor/ios": "^7.2.0",
 		"@prisma/client": "^6.8.2",
+		"aedes": "^0.51.3",
 		"cors": "^2.8.5",
 		"dotenv": "^16.5.0",
 		"express": "^5.1.0",
