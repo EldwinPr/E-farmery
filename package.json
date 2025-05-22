@@ -48,6 +48,7 @@
 	},
 	"dependencies": {
 		"@prisma/client": "^6.8.2",
+		"@sveltejs/adapter-vercel": "^5.7.2",
 		"aedes": "^0.51.3",
 		"cors": "^2.8.5",
 		"dotenv": "^16.5.0",
