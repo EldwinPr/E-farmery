@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"both": "npm run dev || npm run mqtt",
+		"start": "npm run mqtt",
 		"dev": "vite dev",
 		"mqtt": "node broker.cjs",
 		"build": "vite build",
