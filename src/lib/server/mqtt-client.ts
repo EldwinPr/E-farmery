@@ -5,7 +5,10 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 let mqttClient: MqttClient | null = null;
-const BROKER_URL = 'mqtt://localhost:1883';
+const BROKER_URL = mqtt.connect('4391a6fa0a74475198e4231d7e2e9626.s1.eu.hivemq.cloud:8883', {
+  username: 'E-farmery',
+  password: 'Password1'
+});
 
 // Get the current MQTT client instance (or null if not initialized)
 export function getMqttClient(): MqttClient | null {
@@ -31,11 +34,12 @@ export async function initMqttClient(): Promise<MqttClient | null> {
   
   try {
     // Create a new client
-    mqttClient = mqtt.connect(BROKER_URL, {
+    mqttClient = mqtt.connect('mqtts://4391a6fa0a74475198e4231d7e2e9626.s1.eu.hivemq.cloud:8883', {
       clientId: 'e-farmery-' + Math.random().toString(16).substring(2, 10),
+      username: 'EFarmery',
+      password: 'Password1',
       clean: true,
       connectTimeout: 5000,
-      reconnectPeriod: 1000
     });
     
     // Wait for connection to establish
