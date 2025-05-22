@@ -333,20 +333,6 @@
       <div class="bg-white rounded-lg shadow-md p-4">
         <h2 class="text-lg font-semibold mb-4">Irrigation Control</h2>
         
-        <div class="mb-4">
-          <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">
-            Irrigation Duration (seconds)
-          </label>
-          <input
-            type="number"
-            id="duration"
-            bind:value={irrigationDuration}
-            min="5"
-            max="300"
-            class="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
-        
         {#if error.valve}
           <p class="text-red-500 text-sm mb-3">{error.valve}</p>
         {/if}
