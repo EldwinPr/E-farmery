@@ -2,9 +2,35 @@ import tailwindcss from '@tailwindcss/vite';
 import { svelteTesting } from '@testing-library/svelte/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit()],
+	plugins: [tailwindcss(), sveltekit(),
+		    VitePWA({
+      registerType: 'autoUpdate',
+      manifest: {
+        name: 'Smart Irrigation System',
+        short_name: 'IrrigationPWA',
+        start_url: '/',
+        display: 'standalone',
+        background_color: '#ffffff',
+        theme_color: '#4CAF50',
+        icons: [
+          {
+            src: '/icons/icon-192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: '/icons/icon-512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
+      },
+      includeAssets: ['favicon.png', 'icons/icon-192.png', 'icons/icon-512.png']
+    })
+	],
 	test: {
 		workspace: [
 			{
