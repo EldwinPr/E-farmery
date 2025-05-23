@@ -9,8 +9,8 @@ export default defineConfig({
 		    VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Smart Irrigation System',
-        short_name: 'IrrigationPWA',
+        name: 'E-Farmery: Smart Irrigation',
+        short_name: 'E-Farmery',
         start_url: '/',
         display: 'standalone',
         background_color: '#ffffff',
